@@ -3,23 +3,15 @@ function solve(text, word) {
     // let result = text.replaceAll(word, '*'.repeat(stars))
     // console.log(result)
 
-    let result = []
+
     let stars = word.length
 
-
-
-    for (let textElement of text.split(' ')) {
-
-        if (textElement === word) {
-            result.push('*'.repeat(stars))
-
-        } else {
-            result.push(textElement)
-        }
-
+    let censored = text.replace(word, '*'.repeat(stars))
+    
+    while (censored.includes(word)){
+        censored = censored.replace(word, '*'.repeat(stars))
     }
-    console.log(result.join(' '))
-
+    console.log(censored)
 }
 
 solve('A smallwords sentence with some  words words words', 'words')
