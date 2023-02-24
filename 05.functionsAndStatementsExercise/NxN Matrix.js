@@ -1,9 +1,15 @@
-function solve (n,m){
-    for (let row = 0; row < n ; row++) {
-        for (let col = 0; col <m; col++) {
-            console.log(2)
-        }
+function solve(n) {
+
+    let result = ''
+    for (let row = 0; row < n; row++) {
+        result += `${n} `
+
+    }
+    for (let i = 0; i < n; i++) {
+        console.log(result)
+
     }
 
 }
-solve(3,2)
+
+solve(7)
