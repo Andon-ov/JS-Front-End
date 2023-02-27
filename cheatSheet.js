@@ -11,6 +11,12 @@ arr.sort((a,b)=> b.localeCompare(a))
 
 */
 
+// dict sort
+// const sortable = Object.fromEntries(
+//     Object.entries(dict).sort(([a, ], [b, ]) => a.localeCompare(b))
+// );
+
+
 const compareNumbers = {
     ascending: (a, b) => a - b,
     descending: (a, b) => b - a
