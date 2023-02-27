@@ -21,6 +21,18 @@ const compareString = {
     descending: (a, b) => b.localeCompare(a)
 };
 
+let sortable = Object.fromEntries(
+    Object.entries(words)
+        .sort(([a,], [b,]) => a.localeCompare(b))
+);
+
+const entries = Object.entries(words);
+entries.sort((a, b) => b[1] - a[1]);
+
+entries.forEach((elm, i) => {
+  console.log(`${elm[0]} - ${elm[1]}`);
+});
+
 
 
 let arrFalse = [true, false, true];
