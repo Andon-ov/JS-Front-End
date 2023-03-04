@@ -1,10 +1,11 @@
 function attachEvents() {
 
-    let submitBtn = document.getElementById("submit").addEventListener("click", getWeather);
+    let submitBtn = document.getElementById("submit")
     let current = document.getElementById("current");
     let upcoming = document.getElementById("upcoming");
     let forecast = document.getElementById("forecast");
-    let location = document.getElementById("location").value;
+    let searchLocation = document.getElementById("location");
+    submitBtn.addEventListener("click", getWeather);
 
     const conditions = {
         Sunny: "&#x2600", // ☀
@@ -19,8 +20,13 @@ function attachEvents() {
         const res = await fetch(url);
         const data = await res.json();
 
-        let searchedTown = data.find((x) => x.name === location);
-        await createForecaster(searchedTown.code);
+        let searchedTown
+        data.forEach(locationInfoObject => {
+            if (locationInfoObject.name === searchLocation.value) {
+                searchedTown =  locationInfoObject.code
+            }
+        })
+        createForecaster(searchedTown);
     }
 
     async function createForecaster(townCode) {
