@@ -45,7 +45,7 @@ async function loadBooks() {
     tbody.replaceChildren(...result);
 
     [...document.getElementsByClassName('deleteBtn')].forEach(btn => {
-        btn.addEventListener('click',deleteBook(btn.id))
+        btn.addEventListener('click',deleteBook())
     });
 }
 
@@ -69,8 +69,8 @@ async function updateBook(id, book) {
 }
 
 // func delete book
-async function deleteBook(id) {
-    console.log(id);
+async function deleteBook() {
+    console.log();
     const result = await request(`${url}/${id}`, {
         method: "DELETE",
     });
