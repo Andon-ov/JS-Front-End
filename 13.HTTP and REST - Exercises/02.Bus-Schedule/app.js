@@ -1,5 +1,5 @@
+/*
 function solve() {
-
 
     let info = document.getElementById('info');
     let departBtn = document.getElementById('depart');
@@ -8,8 +8,7 @@ function solve() {
     let nextStopId = 'depot';
     let stopName;
 
-
-     function depart() {
+    function depart() {
         let url = `http://localhost:3030/jsonstore/bus/schedule/${nextStopId}`;
 
         fetch(url)
@@ -23,11 +22,11 @@ function solve() {
                 arriveBtn.disabled = false;
 
             })
-            .catch((e) => {
+            .catch((error) => {
 
-                // e.status = response.status;
-                // e.statusText = response.statusText;
-                // throw error;
+                error.status = response.status;
+                error.statusText = response.statusText;
+                throw error;
 
                 info.textContent = `Error`;
                 departBtn.disabled = true;
@@ -50,34 +49,84 @@ function solve() {
 }
 
 let result = solve();
+*/
 //TODO 66/100
 
+// async function depart() {
+//     let url = `http://localhost:3030/jsonstore/bus/schedule/${nextStopId}`;
+// departBtn.disabled = true
+// try {
+//     const response = await fetch(url);
+//     if (response.ok !== true) {
+//         let error = new Error();
+//         error.status = response.status;
+//         error.statusText = response.statusText;
+//         throw error;
+//     }
+//     const data = await response.json();
+//     stopName = data.name;
+//     nextStopId = data.next;
+//     info.textContent = `Next stop ${stopName}`;
+//     departBtn.disabled = true;
+//     arriveBtn.disabled = false;
+// } catch (error) {
+//     info.textContent = `Error`;
+//     departBtn.disabled = true;
+//     arriveBtn.disabled = true;
+// }
 
- // async function depart() {
-    //     let url = `http://localhost:3030/jsonstore/bus/schedule/${nextStopId}`;
-        // departBtn.disabled = true
-        // try {
-        //     const response = await fetch(url);
 
-        //     if (response.ok !== true) {
+function solve() {
 
-        //         let error = new Error();
-        //         error.status = response.status;
-        //         error.statusText = response.statusText;
-        //         throw error;
-        //     }
+    let info = document.getElementById('info');
+    let departBtn = document.getElementById('depart');
+    let arriveBtn = document.getElementById('arrive');
 
-        //     const data = await response.json();
+    let stop = {
+        next: 'depot',
 
-        //     stopName = data.name;
-        //     nextStopId = data.next;
+    };
 
-        //     info.textContent = `Next stop ${stopName}`;
-        //     departBtn.disabled = true;
-        //     arriveBtn.disabled = false;
+    function depart() {
+        const url = `http://localhost:3030/jsonstore/bus/schedule/${stop.next}`;
 
-        // } catch (error) {
-        //     info.textContent = `Error`;
-        //     departBtn.disabled = true;
-        //     arriveBtn.disabled = true;
-        // }
+        // get info for next stop
+        // activate other btn and disable this
+        // display name of next stop
+
+        fetch(url)
+            .then((res) => res.json())
+            .then((data) => {
+                stop = data;
+                info.textContent = `Next stop ${stop.name}`;
+                departBtn.disabled = true;
+                arriveBtn.disabled = false;
+            })
+            .catch(error => {
+                info.textContent = `Error`;
+                departBtn.disabled = true;
+                arriveBtn.disabled = true;
+
+            });
+
+    }
+    function arrive() {
+
+        //  display name of current stop
+        // activate other btn and disable this
+
+        info.textContent = `Arriving at ${stop.name}`;
+        departBtn.disabled = false;
+        arriveBtn.disabled = true;
+    }
+
+
+    return {
+        depart,
+        arrive
+    };
+
+}
+let result = solve();
+
+

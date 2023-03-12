@@ -1,10 +1,11 @@
-/*
+/* const loadBtn = document.getElementById('load-button');
+const addBtn = document.getElementById('add-button');
+const title = document.getElementById('title');
+const todoList = document.getElementById('todo-list');
+const loadUrl = `http://localhost:3030/jsonstore/tasks/`;
+
 function attachEvents() {
-    const loadBtn = document.getElementById('load-button');
-    const addBtn = document.getElementById('add-button');
-    const title = document.getElementById('title');
-    const todoList = document.getElementById('todo-list');
-    const loadUrl = `http://localhost:3030/jsonstore/tasks/`;
+
     loadBtn.addEventListener('click', loadAll);
     addBtn.addEventListener('click', addNew);
 
@@ -13,129 +14,128 @@ function attachEvents() {
         e.preventDefault();
     });
 
+}
 
-    async function editTask(e) {
-        let target = e.target
-        target.textContent = 'Submit'
+async function editTask(e) {
+    let target = e.target;
+    target.textContent = 'Submit';
 
-        const res = await fetch(loadUrl + target.value);
-        const data = await res.json();
+    const res = await fetch(loadUrl + target.value);
+    const data = await res.json();
 
-        let input = document.createElement('input')
-        input.value = data.name
+    let input = document.createElement('input');
+    input.value = data.name;
 
-        let span = target.parentElement.firstChild
-        let li = target.parentElement
+    let span = target.parentElement.firstChild;
+    let li = target.parentElement;
 
-        li.replaceChild(input, span)
-        target.addEventListener('click', onSubmit)
+    li.replaceChild(input, span);
+    target.addEventListener('click', onSubmit);
 
-        async function onSubmit() {
-            const task = {
-                name: input.value,
-                _id: target.value
-            };
-
-            const options = {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(task),
-            };
-            const res = await fetch(loadUrl + target.value, options);
-            const data = await res.json();
-            if (data) {
-                let span = document.createElement('span')
-                let input = target.parentElement.firstChild
-                span.textContent = data.name
-                li.replaceChild(span ,input)
-                // loadAll();
-            }
-        }
-
-    }
-
-    async function loadAll() {
-        todoList.innerHTML = '';
-
-        const res = await fetch(loadUrl);
-        const data = await res.json();
-        Object.values(data).forEach(x => createElement(x));
-
-    }
-
-    async function addNew() {
-        if (title.value === '') {
-            return;
-        }
+    async function onSubmit() {
         const task = {
-            name: title.value
+            name: input.value,
+            _id: target.value
         };
 
         const options = {
-            method: "post",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(task),
         };
-        const res = await fetch(loadUrl, options);
+        const res = await fetch(loadUrl + target.value, options);
         const data = await res.json();
         if (data) {
-            title.value = '';
-            loadAll();
-        }
-
-    }
-
-    function createElement(task) {
-
-        const li = document.createElement('li');
-        const spam = document.createElement('span');
-        spam.textContent = task.name;
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = 'Remove';
-        removeBtn.classList.add('remove');
-        removeBtn.value = task._id;
-        removeBtn.addEventListener('click', removeTask);
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Edit';
-        editBtn.classList.add('edit');
-        editBtn.value = task._id;
-        editBtn.addEventListener('click', editTask);
-
-
-        li.appendChild(spam);
-        li.appendChild(removeBtn);
-        li.appendChild(editBtn);
-
-        todoList.appendChild(li);
-    }
-
-    async function removeTask(e) {
-        let id = e.currentTarget.value;
-
-        const options = {
-            method: "delete",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
-        const res = await fetch(loadUrl + id, options);
-        const data = await res.json();
-        if (data) {
-            loadAll();
+            let span = document.createElement('span');
+            let input = target.parentElement.firstChild;
+            span.textContent = data.name;
+            li.replaceChild(span, input);
+            // loadAll();
         }
     }
 
+}
+
+async function loadAll() {
+    todoList.innerHTML = '';
+
+    const res = await fetch(loadUrl);
+    const data = await res.json();
+    Object.values(data).forEach(x => createElement(x));
+
+}
+
+async function addNew() {
+    if (title.value === '') {
+        return;
+    }
+    const task = {
+        name: title.value
+    };
+
+    const options = {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(task),
+    };
+    const res = await fetch(loadUrl, options);
+    const data = await res.json();
+    if (data) {
+        title.value = '';
+        loadAll();
+    }
+
+}
+
+function createElement(task) {
+
+    const li = document.createElement('li');
+    const spam = document.createElement('span');
+    spam.textContent = task.name;
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remove';
+    removeBtn.classList.add('remove');
+    removeBtn.value = task._id;
+    removeBtn.addEventListener('click', removeTask);
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.classList.add('edit');
+    editBtn.value = task._id;
+    editBtn.addEventListener('click', editTask);
+
+
+    li.appendChild(spam);
+    li.appendChild(removeBtn);
+    li.appendChild(editBtn);
+
+    todoList.appendChild(li);
+}
+
+async function removeTask(e) {
+    let id = e.currentTarget.value;
+
+    const options = {
+        method: "delete",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
+    const res = await fetch(loadUrl + id, options);
+    const data = await res.json();
+    if (data) {
+        loadAll();
+    }
 }
 
 attachEvents();
 //TODO 80/100
 
 
-*/
+
 const BASE_URL = 'http://localhost:3030/jsonstore/tasks';
 const addButton = document.querySelector("#add-button");
 const loadButton = document.getElementById('load-button');
@@ -233,3 +233,124 @@ function createElement(elementTag, value, parent) {
 attachEvents();
 
 //TODO 90/100
+*/
+
+// Selectors for DOM elements
+const loadBtn = document.getElementById('loadBtn');
+const addBtn = document.getElementById('addBtn');
+const taskInput = document.getElementById('taskInput');
+const tasksUl = document.getElementById('tasksUl');
+
+// URL endpoint
+const BASE_URL = 'http://localhost:3030/jsonstore/tasks';
+
+// Load tasks on page load
+window.addEventListener('load', loadTasks);
+
+// Event listener for Load All button
+loadBtn.addEventListener('click', loadTasks);
+
+// Event listener for Add button
+addBtn.addEventListener('click', addTask);
+
+// Function to load tasks from server
+function loadTasks() {
+  fetch(BASE_URL)
+    .then(response => response.json())
+    .then(data => {
+      tasksUl.innerHTML = '';
+      Object.values(data).forEach(task => {
+        const li = createTaskElement(task);
+        tasksUl.appendChild(li);
+      });
+    })
+    .catch(error => console.log(error));
+}
+
+// Function to create a single task element
+function createTaskElement(task) {
+  const li = document.createElement('li');
+  const span = document.createElement('span');
+  span.textContent = task.name;
+  li.appendChild(span);
+  const removeBtn = document.createElement('button');
+  removeBtn.textContent = 'Remove';
+  removeBtn.addEventListener('click', () => {
+    removeTask(task._id);
+  });
+  li.appendChild(removeBtn);
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.addEventListener('click', () => {
+    editTask(li, task);
+  });
+  li.appendChild(editBtn);
+  return li;
+}
+
+// Function to add a new task
+function addTask() {
+  const taskName = taskInput.value;
+  if (!taskName) return;
+  const task = { name: taskName };
+  fetch(BASE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(task)
+  })
+    .then(response => response.json())
+    .then(data => {
+      const li = createTaskElement(data);
+      tasksUl.appendChild(li);
+      taskInput.value = '';
+    })
+    .catch(error => console.log(error));
+}
+
+// Function to remove a task
+function removeTask(taskId) {
+  fetch(`${BASE_URL}/${taskId}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      loadTasks();
+    })
+    .catch(error => console.log(error));
+}
+
+// Function to edit a task
+function editTask(li, task) {
+  const span = li.querySelector('span');
+  const editBtn = li.querySelector('button:nth-of-type(2)');
+  span.style.display = 'none';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = task.name;
+  li.insertBefore(input, editBtn);
+  editBtn.textContent = 'Submit';
+  editBtn.removeEventListener('click', () => {
+    editTask(li, task);
+  });
+  editBtn.addEventListener('click', () => {
+    const newName = input.value;
+    if (!newName) return;
+    const newTask = { name: newName };
+    fetch(`${BASE_URL}/${task._id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTask)
+    })
+      .then(response => response.json())
+      .then(data => {
+        span.textContent = newName;
+        span.style.display = 'inline';
+        li.removeChild(input);
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => {
+          editTask(li, data);
+        });
+      })
+      .catch(error => console.log(error));
+  });
+}
