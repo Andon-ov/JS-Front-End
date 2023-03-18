@@ -1,3 +1,3 @@
-function solve(params) {
+function solve(input) {
     
 }
