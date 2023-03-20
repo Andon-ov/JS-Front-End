@@ -87,7 +87,6 @@ function solve() {
   }
 
   function editCar(event) {
-    // console.log(event.target.parentElement.parentElement.getElementsBy);
     console.log(document.getElementsByTagName('td'));
     
 
@@ -98,11 +97,7 @@ function solve() {
     originalCost.value = car.originalCost;
     sellingPrice.value = car.sellingPrice;
     event.target.parentElement.parentElement.remove();
-    
-   
-
-
-
+ 
   }
   function sellCar(event) {
     let carProfit = Number(car.sellingPrice) - Number(car.originalCost);

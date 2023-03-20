@@ -153,21 +153,13 @@ function createRow(id, book) {
 
     return row;
 
-
 }
 function removeBook(e) {
     console.log(e.target);
 }
 
 
-
-
-
-
-
-
 attachEvents();
-// TODO
 
 
 

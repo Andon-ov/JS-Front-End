@@ -53,19 +53,19 @@ function solve(inputs) {
 
 
 
-//
-// solve(["Gold|Silver|Bronze|Medallion|Cup",
-//     "Loot Wood Gold Coins",
-//     "Loot Silver Pistol",
-//     "Drop 3",
-//     "Steal 3",
-//     "Yohoho!"])
 
-solve(["Diamonds|Silver|Shotgun|Gold",
-    "Loot Silver Medals Coal",
-    "Drop -1",
-    "Drop 1",
-    "Steal 6",
+solve(["Gold|Silver|Bronze|Medallion|Cup",
+    "Loot Wood Gold Coins",
+    "Loot Silver Pistol",
+    "Drop 3",
+    "Steal 3",
     "Yohoho!"])
+
+// solve(["Diamonds|Silver|Shotgun|Gold",
+//     "Loot Silver Medals Coal",
+//     "Drop -1",
+//     "Drop 1",
+//     "Steal 8",
+//     "Yohoho!"])
 
 

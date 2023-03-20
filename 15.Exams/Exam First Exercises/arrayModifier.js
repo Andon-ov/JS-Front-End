@@ -24,20 +24,17 @@ function solve(input) {
 
             firstIndex = Number(firstIndex);
             secondIndex = Number(secondIndex);
-            arr[firstIndex]  *= arr[secondIndex];
-
+            arr[firstIndex] *= arr[secondIndex];
 
         } else if (command === 'decrease') {
             // decreases all elements in the array with 1.
-            arr = arr.map(num => num -1);
+            arr = arr.map(num => num - 1);
 
         } else if (command === 'end') {
-            console.log(arr.join(', '))
+            console.log(arr.join(', '));
             break;
         }
     }
-
-
 }
 
 solve([
