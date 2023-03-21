@@ -78,9 +78,9 @@ let result = solve();
 
 function solve() {
 
-    let info = document.getElementById('info');
-    let departBtn = document.getElementById('depart');
-    let arriveBtn = document.getElementById('arrive');
+    let info = document.querySelector(".info");
+    let departBtn = document.getElementById("depart");
+    let arriveBtn = document.getElementById("arrive");
 
     let stop = {
         next: 'depot',
@@ -128,5 +128,44 @@ function solve() {
 
 }
 let result = solve();
-
-
+// function solve() {
+//
+//     const baseUrl = 'http://localhost:3030/jsonstore/bus/schedule/';
+//     let currentStopId = 'depot';
+//
+//     const departButton = document.getElementById('depart');
+//     const arriveButton = document.getElementById('arrive');
+//     const infoBox = document.querySelector('.info');
+//
+//     async function updateStopInfo(stopId) {
+//         const response = await fetch(baseUrl + stopId);
+//         if (response.ok) {
+//             const data = await response.json();
+//             currentStopId = data.next;
+//             infoBox.textContent = `Next stop ${data.name}`;
+//             departButton.disabled = true;
+//             arriveButton.disabled = false;
+//         } else {
+//             infoBox.textContent = 'Error';
+//             departButton.disabled = true;
+//             arriveButton.disabled = true;
+//         }
+//     }
+//
+//     function depart() {
+//         updateStopInfo(currentStopId);
+//     }
+//
+//     function arrive() {
+//         infoBox.textContent = `Arriving at ${infoBox.textContent.split(' ')[2]}`;
+//         departButton.disabled = false;
+//         arriveButton.disabled = true;
+//     }
+//
+//     departButton.addEventListener('click', depart);
+//     arriveButton.addEventListener('click', arrive);
+//
+//
+// }
+//
+// let result = solve();
