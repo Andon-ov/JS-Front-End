@@ -1,0 +1,43 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Easy SPA method</title>
+</head>
+<body>
+<h1>Car Shop</h1>
+
+<nav>
+    <a id="home-link" href="#">Home</a>
+    <a id="catalog-link" href="#">Catalog</a>
+    <a id="login-link" href="#">Login</a>
+</nav>
+
+<section id="home">
+    <h2>Welcome to our site</h2>
+</section>
+<section id="catalog">
+    <h2>Catalog</h2>
+</section>
+<section id="login">
+    <h2>Sing In</h2>
+</section>
+<script>
+    <!--    Hide all section and show only this how you want   -->
+    document.getElementById('home-link').addEventListener('click', () => {
+        document.querySelectorAll('section').forEach(x => x.style.display = 'none')
+        document.getElementById('home').style.display = 'block'
+    })
+    document.getElementById('catalog-link').addEventListener('click', () => {
+        document.querySelectorAll('section').forEach(x => x.style.display = 'none')
+        document.getElementById('catalog').style.display = 'block'
+    })
+    document.getElementById('login-link').addEventListener('click', () => {
+        document.querySelectorAll('section').forEach(x => x.style.display = 'none')
+        document.getElementById('login').style.display = 'block'
+    })
+</script>
+</body>
+</html>

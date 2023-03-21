@@ -1,0 +1,53 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Easy SPA method</title>
+</head>
+<body>
+<h1>Car Shop</h1>
+
+<nav>
+    <a id="home-link" href="#">Home</a>
+    <a id="catalog-link" href="#">Catalog</a>
+    <a id="login-link" href="#">Login</a>
+</nav>
+<main></main>
+<section id="home">
+    <h2>Welcome to our site</h2>
+</section>
+<section id="catalog">
+    <h2>Catalog</h2>
+</section>
+<section id="login">
+    <h2>Sing In</h2>
+</section>
+<script>
+    <!--    Get a main - here a place where i can show my content -->
+    const main = document.querySelector('main')
+    // Make object with all views
+    const views = {
+        home: document.getElementById('home'),
+        catalog: document.getElementById('catalog'),
+        login: document.getElementById('login')
+    }
+    //  Remove all views from a page
+    Object.values(views).forEach(v => v.remove())
+    //  Show Home page
+    main.replaceChildren(views.home)
+
+    // Show the chosen one page
+    document.getElementById('home-link').addEventListener('click', () => {
+        main.replaceChildren(views.home)
+    })
+    document.getElementById('catalog-link').addEventListener('click', () => {
+        main.replaceChildren(views.catalog)
+    })
+    document.getElementById('login-link').addEventListener('click', () => {
+        main.replaceChildren(views.login)
+    })
+</script>
+</body>
+</html>
