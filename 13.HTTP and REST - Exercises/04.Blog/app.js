@@ -1,72 +1,61 @@
 function attachEvents() {
-    document.getElementById('btnLoadPosts').addEventListener("click", getAllPosts)
-    document.getElementById('btnViewPost').addEventListener("click", displayPost)
+    document.getElementById('btnLoadPosts').addEventListener("click", loadPost);
+    document.getElementById('btnViewPost').addEventListener("click", viewPost);
 
+    const posts = [];
 
-    async function displayPost() {
-        const selectedId = document.getElementById('posts').value
+    async function loadPost() {
+        document.getElementById('posts');
         try {
-            const [post, comments] = await Promise.all([
-                getPostById(selectedId),
-                getCommentByPostId(selectedId)
-            ])
+            const url = `http://localhost:3030/jsonstore/blog/posts`;
+            const res = await fetch(url);
+            if (res.ok === false) {
+                throw new Error();
+            }
+            const data = await res.json();
+            document.getElementById('posts').innerHTML = '';
+            Object.entries(data).forEach(([key, value]) => {
+                const optionElement = document.createElement('option');
+                optionElement.value = key;
+                optionElement.textContent = value.title;
+                document.getElementById('posts').appendChild(optionElement);
+                posts.push({title: value.title, body: value.body});
+            });
 
-
-            document.getElementById('post-title').textContent = post.title
-            document.getElementById('post-body').textContent = post.body
-
-            const ul = document.getElementById('post-comments')
-            ul.replaceChildren()
-            comments.forEach(c => {
-                const liElement = document.createElement('li')
-                liElement.textContent = c.text
-                ul.appendChild(liElement)
-            })
-        } catch (e) {
-            console.log(e)
+        } catch (error) {
+            console.log(error);
         }
-
-
     }
 
-    async function getAllPosts() {
-        const selectElement = document.getElementById('posts')
-        selectElement.replaceChildren()
-
+    async function viewPost() {
         try {
-            const url = `http://localhost:3030/jsonstore/blog/posts`
-            const res = await fetch(url)
-            const data = await res.json()
 
+            const selectedElement = document.getElementById('posts');
+            const url = `http://localhost:3030/jsonstore/blog/comments`;
+            const res = await fetch(url);
+            if (res.ok === false) {
+                throw new Error();
+            }
+            const data = await res.json();
+            const comments = Object.values(data).filter(el => el.postId === selectedElement.value);
 
-            Object.values(data).forEach(p => {
-                const optionElement = document.createElement('option')
-                optionElement.textContent = p.title
-                optionElement.value = p.id
-                selectElement.appendChild(optionElement)
-            })
-        } catch (e) {
-            console.log(e)
+            document.getElementById('post-title').textContent = selectedElement.selectedOptions[0].textContent;
+            const po = posts.filter(p => p.title === selectedElement.selectedOptions[0].textContent);
 
+            document.getElementById('post-body').innerHTML = `${po[0].body}`;
+            document.getElementById('post-comments').innerHTML = '';
+
+            comments.forEach(el => {
+                const liElement = document.createElement('li');
+                liElement.textContent = el.text;
+                document.getElementById('post-comments').appendChild(liElement);
+
+            });
+        } catch (error) {
+            console.log(error);
         }
-
     }
-
-    async function getPostById(postId) {
-        const url = `http://localhost:3030/jsonstore/blog/posts/` + postId
-        const res = await fetch(url)
-        return await res.json()
-    }
-
-    async function getCommentByPostId(postId) {
-        const url = `http://localhost:3030/jsonstore/blog/comments`
-        const res = await fetch(url)
-        const data = await res.json()
-        return Object.values(data).filter(c => c.postId === postId)
-    }
-
 }
 
 attachEvents();
 
-//TODO 50/100

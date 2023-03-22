@@ -1,6 +1,7 @@
 const host = 'http://localhost:3030';
 
 
+
 async function request(method, url, data) {
     try {
         const userData = JSON.parse(localStorage.getItem('userData'));
