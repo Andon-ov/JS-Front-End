@@ -15,7 +15,7 @@ const title = document.querySelector('input[name="title"]');
 const author = document.querySelector('input[name="author"]');
 // form h3
 let formTitle = document.querySelector('#form h3');
-
+let allBooks = {}
 // load all books
 loadBooks();
 
@@ -66,21 +66,20 @@ function addBook(event) {
 }
 
 function editBook(event) {
-    let id = event.target.dataset.id;
+    let id = event.target.parentElement.dataset.id;
     formBtn.value = id;
 
     formBtn.textContent = 'Save';
     formTitle.textContent = 'Edit FORM';
-    let parent = event.target.parentElement.parentElement;
 
-    let tdTitle = parent.querySelector('td:nth-child(1)').textContent;
-    let tdaAuthor = parent.querySelector('td:nth-child(2)').textContent;
-    title.value = tdTitle;
-    author.value = tdaAuthor;
+    // if we want to clear this from table when edit
+    // let parent = event.target.parentElement.parentElement;
     // parent.innerHTML = '';
 
-}
 
+    title.value = allBooks[id].title
+    author.value = allBooks[id].author
+}
 
 // send request
 async function request(url, options) {
@@ -107,10 +106,9 @@ async function request(url, options) {
 async function loadBooks() {
     const books = await request(url);
     const result = Object.entries(books).map(([id, book]) => createRow(id, book));
+    allBooks = books;
     tbody.replaceChildren(...result);
 
-    Array.from(document.getElementsByClassName('deleteBtn')).forEach(b => b.addEventListener('click', deleteBook));
-    Array.from(document.getElementsByClassName('editBtn')).forEach(b => b.addEventListener('click', editBook));
 }
 
 // func create book
@@ -120,7 +118,6 @@ async function createBook(book) {
         body: JSON.stringify(book),
     });
     loadBooks();
-
     return result;
 }
 
@@ -137,7 +134,7 @@ async function updateBook(id, book) {
 
 // func delete book
 async function deleteBook(event) {
-    let id = event.target.dataset.id;
+    let id = event.target.parentElement.dataset.id;
 
     const result = await request(`${url}/${id}`, {
         method: "DELETE",
@@ -150,12 +147,33 @@ async function deleteBook(event) {
 function createRow(id, book) {
 
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${book.title}</td>
-    <td>${book.author}</td>
-    <td>
-        <button class ="editBtn" data-id=${id}>Edit</button>
-        <button class = "deleteBtn" data-id=${id}>Delete</button>
-    </td>`;
+
+    const titleTd = document.createElement('td')
+    titleTd.textContent = book.title
+
+    const authorTd = document.createElement('td')
+    authorTd.textContent = book.author
+
+    const buttonsTd = document.createElement('td')
+    buttonsTd.setAttribute('data-id' , id);
+    
+    const editBtn = document.createElement('button')
+    editBtn.classList.add('editBtn')
+    editBtn.textContent = `Edit`
+    editBtn.addEventListener('click', editBook)
+
+    const deleteBtn = document.createElement('button')
+    deleteBtn.classList.add('deleteBtn')
+    deleteBtn.textContent = `Delete`
+    deleteBtn.addEventListener('click', deleteBook)
+
+    buttonsTd.appendChild(editBtn)
+    buttonsTd.appendChild(deleteBtn)
+
+    row.appendChild(titleTd)
+    row.appendChild(authorTd)
+    row.appendChild(buttonsTd)
+
     return row;
 
 }
