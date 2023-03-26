@@ -21,6 +21,8 @@ function lockedProfile() {
             usernameValue.value = username
             emailValue.value = email
             ageValue.value = age
+            ageValue.removeAttribute('disabled');
+            ageValue.removeAttribute('readonly');
             hideInfo.style.display = 'none'
 
 

@@ -103,6 +103,7 @@ describe('E2E tests', function () {
 
       await page.click('input[value="unlock"]');
       await page.click('text=Show more');
+
       const post = await page.$$eval(`input[type="email"]`, (t) =>
         t.map((s) => s.value)
       );
