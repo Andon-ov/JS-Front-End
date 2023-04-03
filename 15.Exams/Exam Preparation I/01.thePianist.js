@@ -1,9 +1,8 @@
 function thePianist(input) {
-
     let n = Number(input.shift());
-    let piecesCollection = {};
+    let allPiece = {};
 
-    let commandParser = {
+    let commands = {
         'Add': addPiece,
         'Remove': removePiece,
         'ChangeKey': changeKeyPiece
@@ -11,61 +10,53 @@ function thePianist(input) {
 
     for (let i = 0; i < n; i++) {
         let [piece, composer, key] = input.shift().split('|');
-        piecesCollection[piece] = {composer, key};
+        allPiece[piece] = {composer, key};
     }
 
-    for (const inputLine of input) {
-        if (inputLine === 'Stop') {
-            break;
-        }
+    let commandLine = input.shift();
+    while (commandLine !== 'Stop') {
 
-        let commandTokens = inputLine.split('|');
-        let command = commandTokens.shift();
-        commandParser[command](...commandTokens);
-    }
+        let line = commandLine.split('|');
+        let command = line.shift();
+        commands[command](...line);
 
-    for (let piece in piecesCollection) {
-        const {key, composer} = piecesCollection[piece]
-        console.log(`${piece} -> Composer: ${composer}, Key: ${key}`)
-
+        commandLine = input.shift();
     }
 
     function addPiece(piece, composer, key) {
-        if (piecesCollection.hasOwnProperty(piece)) {
+
+        if (allPiece.hasOwnProperty(piece)) {
             console.log(`${piece} is already in the collection!`);
 
         } else {
+            allPiece[piece] = {'composer': composer, 'key': key};
             console.log(`${piece} by ${composer} in ${key} added to the collection!`);
-            piecesCollection[piece] = {composer, key};
         }
+
     }
 
     function removePiece(piece) {
-        if (piecesCollection.hasOwnProperty(piece)) {
-
-            delete piecesCollection[piece];
-            console.log(`Successfully removed ${piece}!`);
-
+        if (allPiece.hasOwnProperty(piece)) {
+            delete allPiece[piece]
+            console.log(`Successfully removed ${piece}!`)
         } else {
-            console.log(`Invalid operation! ${piece} does not exist in the collection.`);
+            console.log(`Invalid operation! ${piece} does not exist in the collection.`)
         }
 
     }
 
     function changeKeyPiece(piece, newKey) {
-        if (piecesCollection.hasOwnProperty(piece)) {
-
-            console.log(`Changed the key of ${piece} to ${newKey}!`);
-            piecesCollection[piece].key = newKey;
-
+        if (allPiece.hasOwnProperty(piece)) {
+            allPiece[piece].key = newKey
+            console.log(`Changed the key of ${piece} to ${newKey}!`)
         } else {
-
-            console.log(`Invalid operation! ${piece} does not exist in the collection.`);
+            console.log(`Invalid operation! ${piece} does not exist in the collection.`)
         }
     }
 
+    Object.entries(allPiece).forEach(x => console.log(`${x[0]} -> Composer: ${allPiece[x[0]].composer}, Key: ${allPiece[x[0]].key}`))
+//     )
 }
-
 
 thePianist([
     '3',
@@ -79,20 +70,115 @@ thePianist([
     'ChangeKey|Moonlight Sonata|C# Major',
     'Stop'
 ]);
-thePianist([
-    '4',
-    'Eine kleine Nachtmusik|Mozart|G Major',
-    'La Campanella|Liszt|G# Minor',
-    'The Marriage of Figaro|Mozart|G Major',
-    'Hungarian Dance No.5|Brahms|G Minor',
-    'Add|Spring|Vivaldi|E Major',
-    'Remove|The Marriage of Figaro',
-    'Remove|Turkish March',
-    'ChangeKey|Spring|C Major',
-    'Add|Nocturne|Chopin|C# Minor',
-    'Stop'
-]);
+// thePianist([
+//     '4',
+//     'Eine kleine Nachtmusik|Mozart|G Major',
+//     'La Campanella|Liszt|G# Minor',
+//     'The Marriage of Figaro|Mozart|G Major',
+//     'Hungarian Dance No.5|Brahms|G Minor',
+//     'Add|Spring|Vivaldi|E Major',
+//     'Remove|The Marriage of Figaro',
+//     'Remove|Turkish March',
+//     'ChangeKey|Spring|C Major',
+//     'Add|Nocturne|Chopin|C# Minor',
+//     'Stop'
+// ]);
 
+
+// function thePianist(input) {
+
+//     let n = Number(input.shift());
+//     let piecesCollection = {};
+
+//     let commandParser = {
+//         'Add': addPiece,
+//         'Remove': removePiece,
+//         'ChangeKey': changeKeyPiece
+//     };
+
+//     for (let i = 0; i < n; i++) {
+//         let [piece, composer, key] = input.shift().split('|');
+//         piecesCollection[piece] = {composer, key};
+//     }
+
+//     for (const inputLine of input) {
+//         if (inputLine === 'Stop') {
+//             break;
+//         }
+
+//         let commandTokens = inputLine.split('|');
+//         let command = commandTokens.shift();
+//         commandParser[command](...commandTokens);
+//     }
+
+//     for (let piece in piecesCollection) {
+//         const {key, composer} = piecesCollection[piece]
+//         console.log(`${piece} -> Composer: ${composer}, Key: ${key}`)
+
+//     }
+
+//     function addPiece(piece, composer, key) {
+//         if (piecesCollection.hasOwnProperty(piece)) {
+//             console.log(`${piece} is already in the collection!`);
+
+//         } else {
+//             console.log(`${piece} by ${composer} in ${key} added to the collection!`);
+//             piecesCollection[piece] = {composer, key};
+//         }
+//     }
+
+//     function removePiece(piece) {
+//         if (piecesCollection.hasOwnProperty(piece)) {
+
+//             delete piecesCollection[piece];
+//             console.log(`Successfully removed ${piece}!`);
+
+//         } else {
+//             console.log(`Invalid operation! ${piece} does not exist in the collection.`);
+//         }
+
+//     }
+
+//     function changeKeyPiece(piece, newKey) {
+//         if (piecesCollection.hasOwnProperty(piece)) {
+
+//             console.log(`Changed the key of ${piece} to ${newKey}!`);
+//             piecesCollection[piece].key = newKey;
+
+//         } else {
+
+//             console.log(`Invalid operation! ${piece} does not exist in the collection.`);
+//         }
+//     }
+
+// }
+
+
+// thePianist([
+//     '3',
+//     'Fur Elise|Beethoven|A Minor',
+//     'Moonlight Sonata|Beethoven|C# Minor',
+//     'Clair de Lune|Debussy|C# Minor',
+//     'Add|Sonata No.2|Chopin|B Minor',
+//     'Add|Hungarian Rhapsody No.2|Liszt|C# Minor',
+//     'Add|Fur Elise|Beethoven|C# Minor',
+//     'Remove|Clair de Lune',
+//     'ChangeKey|Moonlight Sonata|C# Major',
+//     'Stop'
+// ]);
+// thePianist([
+//     '4',
+//     'Eine kleine Nachtmusik|Mozart|G Major',
+//     'La Campanella|Liszt|G# Minor',
+//     'The Marriage of Figaro|Mozart|G Major',
+//     'Hungarian Dance No.5|Brahms|G Minor',
+//     'Add|Spring|Vivaldi|E Major',
+//     'Remove|The Marriage of Figaro',
+//     'Remove|Turkish March',
+//     'ChangeKey|Spring|C Major',
+//     'Add|Nocturne|Chopin|C# Minor',
+//     'Stop'
+// ]);
 
 
 // function thePianist(input) {
