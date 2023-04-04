@@ -1,44 +1,134 @@
 window.addEventListener("load", solve);
 
 function solve() {
-  //TODO ....
+  // get HTML elements
+  const main = document.getElementById('main');
+  const formBtn = document.getElementById('form-btn');
+  const previewList = document.getElementById('preview-list');
+  const form = document.querySelector('form');
+
+  // get all inputs in object
+  const allInput = {
+    firstName: document.getElementById('first-name'),
+    lastName: document.getElementById('last-name'),
+    age: document.getElementById('age'),
+    storyTitle: document.getElementById('story-title'),
+    genre: document.getElementById('genre'),
+    story: document.getElementById('story'),
+  };
+
+
+  const { firstName, lastName, age, storyTitle, genre, story } = allInput;
+  // object with all inputs value
+  const memory = {};
+
+
+  formBtn.addEventListener('click', onPublish);
+
+  function onPublish(event) {
+    event.preventDefault();
+
+    // check input for empty string
+    let allInputIsCorrect = Object.values(allInput)
+      .every((input) => input.value !== '');
+
+
+    if (!allInputIsCorrect) {
+      return;
+    }
+
+    // push all inputs in memory if is correct
+    for (const input in allInput) {
+      memory[input] = allInput[input].value;
+    }
+
+    // create elements
+    const li = createElement('li', previewList, null, ['story-info']);
+    const article = createElement('article', li);
+    const h4Name = createElement('h4', article, `Name: ${firstName.value} ${lastName.value}`);
+    const pAge = createElement('p', article, `Age: ${age.value}`);
+    const pTitle = createElement('p', article, `Title: ${storyTitle.value}`);
+    const pGenre = createElement('p', article, `Genre: ${genre.value}`);
+    const pStory = createElement('p', article, story.value);
+    const saveBtn = createElement('button', li, 'Save Story', ['save-btn']);
+    const editBtn = createElement('button', li, 'Edit Story', ['edit-btn']);
+    const deleteBtn = createElement('button', li, 'Delete Story', ['delete-btn']);
+
+    saveBtn.addEventListener('click', onSave);
+    editBtn.addEventListener('click', onEdit);
+    deleteBtn.addEventListener('click', onDelete);
+    // disable button
+    formBtn.disabled = true;
+    // reset form inputs
+    form.reset();
+  }
+
+
+  function onSave() {
+
+    main.innerHTML = '';
+    const h1 = createElement('h1', main, "Your scary story is saved!");
+  }
+
+  function onEdit() {
+
+    for (const key in memory) {
+      allInput[key].value = memory[key];
+    }
+
+    formBtn.disabled = false;
+    let li = this.parentNode;
+    previewList.removeChild(li);
+
+  }
+  function onDelete() {
+    
+    let li = this.parentNode;
+    previewList.removeChild(li);
+    formBtn.disabled = false;
+  }
+
+
+  function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
+    const htmlElement = document.createElement(type);
+
+    if (content && useInnerHtml) {
+      htmlElement.innerHTML = content;
+
+    } else {
+
+      if (content && type !== 'input') {
+        htmlElement.textContent = content;
+
+      }
+      if (content && type === 'input') {
+        htmlElement.value = content;
+      }
+    }
+
+    if (classes && classes.length > 0) {
+      htmlElement.classList.add(...classes);
+    }
+
+    if (id) {
+      htmlElement.id = id;
+    }
+
+    if (attributes) {
+      for (let key in attributes) {
+        htmlElement.setAttribute(key, attributes[key]);
+        // htmlElement[key] = attributes[key];
+      }
+
+    }
+    if (parentNode) {
+      parentNode.appendChild(htmlElement);
+    }
+
+    return htmlElement;
+  }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -196,41 +286,3 @@ function solve() {
 //     }
 // }
 
-// function createElement(type, parentNode, content, classes, id, attributes, htmlElement) {
-//     const htmlElement = document.createElement(type);
-
-//     if (content && useInnerHtml) {
-//         htmlElement.innerHTML = content;
-
-//     } else {
-
-//         if (content && type !== 'input') {
-//             htmlElement.textContent = content;
-
-//         }
-//         if (content && type === 'input') {
-//             htmlElement.value = content;
-//         }
-//     }
-
-//     if (classes && classes.length > 0) {
-//         htmlElement.classList.add(...classes);
-//     }
-
-//     if (id) {
-//         htmlElement.id = id;
-//     }
-
-//     if (attributes) {
-//         for (let key in attributes) {
-//             htmlElement.setAttribute(key, attributes[key]);
-//             // htmlElement[key] = attributes[key];
-//         }
-
-//     }
-//     if (parentNode) {
-//         parentNode.appendChild(htmlElement);
-//     }
-
-//     return htmlElement;
-// }
