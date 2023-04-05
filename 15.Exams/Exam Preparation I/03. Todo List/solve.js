@@ -1,3 +1,174 @@
+function attachEvents() {
+
+    // get buttons and form and attach events
+    const addBtn = document.getElementById('add-button');
+    addBtn.addEventListener('click', onAdd);
+
+    const loadBtn = document.getElementById('load-button');
+    loadBtn.addEventListener('click', onLoad);
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+    });
+
+}
+
+// get other DOM elements
+const root = document.getElementById('root');
+const url = `http://localhost:3030/jsonstore/tasks/`;
+const ul = document.getElementById('todo-list');
+const title = document.getElementById('title');
+
+// load function
+function onAdd(event) {
+    let name = title.value;
+    event.preventDefault();
+
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+    })
+        .then(() => {
+            title.value = '';
+            onLoad();
+        })
+        .catch((error) => console.log(error));
+
+}
+
+
+// function makeRequest(url, method, data, id) {
+//     const options = {
+//         method,
+//         headers: {
+//             'Content-Type': 'application/json'
+//         }
+//     };
+
+//     if (data) {
+//         options.body = JSON.stringify(data);
+//     }
+//     if (id) {
+//         url + id;
+//     }
+
+//     return fetch(url, options)
+//         .then(response => response.json())
+//         .catch(error => console.error(error));
+// }
+
+function onLoad(event) {
+    // if (event) {
+
+    //     event.preventDefault();
+    // }
+
+    ul.innerHTML = '';
+
+    fetch(url)
+        .then((res) => res.json())
+        .then((data) => Object.values(data).map(x => {
+
+            const li = createElement('li', ul, null, null, x._id);
+            const span = createElement('span', li, x.name);
+            const removeBtn = createElement('button', li, 'Remove');
+            removeBtn.addEventListener('click', onRemove);
+            const editBtn = createElement('button', li, 'Edit');
+            editBtn.addEventListener('click', onEdit);
+
+        }))
+        .catch((error) => console.log(error));
+}
+
+function onRemove() {
+    let id = this.parentNode.id;
+    fetch(url + id, {
+        method: "delete",
+
+    })
+        .then(() => {
+            onLoad();
+        })
+        .catch((error) => console.log(error));
+
+}
+
+function onEdit() {
+    const li = this.parentNode;
+    const name = li.querySelector('span').textContent;
+
+    li.innerHTML = '';
+    const input = createElement('input', li, name);
+    const removeBtn = createElement('button', li, 'Remove');
+    const submitBtn = createElement('button', li, 'Submit');
+
+    removeBtn.addEventListener('click', onRemove);
+    submitBtn.addEventListener('click', onSubmit);
+
+}
+
+function onSubmit() {
+    let id = this.parentNode.id;
+    let name = this.parentNode.querySelector('input').value;
+
+
+    fetch(url + id, {
+        method: 'PATCH',
+        body: JSON.stringify({ name })
+    })
+        .then(() => {
+
+            onLoad();
+        })
+        .catch((error) => console.log(error));
+}
+
+function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
+    const htmlElement = document.createElement(type);
+
+    if (content && useInnerHtml) {
+        htmlElement.innerHTML = content;
+
+    } else {
+
+        if (content && type !== 'input') {
+            htmlElement.textContent = content;
+
+        }
+        if (content && type === 'input') {
+            htmlElement.value = content;
+        }
+    }
+
+    if (classes && classes.length > 0) {
+        htmlElement.classList.add(...classes);
+    }
+
+    if (id) {
+        htmlElement.id = id;
+    }
+
+    if (attributes) {
+        for (let key in attributes) {
+            htmlElement.setAttribute(key, attributes[key]);
+            // htmlElement[key] = attributes[key];
+        }
+
+    }
+    if (parentNode) {
+        parentNode.appendChild(htmlElement);
+    }
+
+    return htmlElement;
+}
+
+attachEvents();
+
+
 /* const loadBtn = document.getElementById('load-button');
 const addBtn = document.getElementById('add-button');
 const title = document.getElementById('title');
@@ -235,122 +406,122 @@ attachEvents();
 //TODO 90/100
 */
 
-// Selectors for DOM elements
-const loadBtn = document.getElementById('loadBtn');
-const addBtn = document.getElementById('addBtn');
-const taskInput = document.getElementById('taskInput');
-const tasksUl = document.getElementById('tasksUl');
+// // Selectors for DOM elements
+// const loadBtn = document.getElementById('loadBtn');
+// const addBtn = document.getElementById('addBtn');
+// const taskInput = document.getElementById('taskInput');
+// const tasksUl = document.getElementById('tasksUl');
 
-// URL endpoint
-const BASE_URL = 'http://localhost:3030/jsonstore/tasks';
+// // URL endpoint
+// const BASE_URL = 'http://localhost:3030/jsonstore/tasks';
 
-// Load tasks on page load
-window.addEventListener('load', loadTasks);
+// // Load tasks on page load
+// window.addEventListener('load', loadTasks);
 
-// Event listener for Load All button
-loadBtn.addEventListener('click', loadTasks);
+// // Event listener for Load All button
+// loadBtn.addEventListener('click', loadTasks);
 
-// Event listener for Add button
-addBtn.addEventListener('click', addTask);
+// // Event listener for Add button
+// addBtn.addEventListener('click', addTask);
 
-// Function to load tasks from server
-function loadTasks() {
-  fetch(BASE_URL)
-    .then(response => response.json())
-    .then(data => {
-      tasksUl.innerHTML = '';
-      Object.values(data).forEach(task => {
-        const li = createTaskElement(task);
-        tasksUl.appendChild(li);
-      });
-    })
-    .catch(error => console.log(error));
-}
+// // Function to load tasks from server
+// function loadTasks() {
+//   fetch(BASE_URL)
+//     .then(response => response.json())
+//     .then(data => {
+//       tasksUl.innerHTML = '';
+//       Object.values(data).forEach(task => {
+//         const li = createTaskElement(task);
+//         tasksUl.appendChild(li);
+//       });
+//     })
+//     .catch(error => console.log(error));
+// }
 
-// Function to create a single task element
-function createTaskElement(task) {
-  const li = document.createElement('li');
-  const span = document.createElement('span');
-  span.textContent = task.name;
-  li.appendChild(span);
-  const removeBtn = document.createElement('button');
-  removeBtn.textContent = 'Remove';
-  removeBtn.addEventListener('click', () => {
-    removeTask(task._id);
-  });
-  li.appendChild(removeBtn);
-  const editBtn = document.createElement('button');
-  editBtn.textContent = 'Edit';
-  editBtn.addEventListener('click', () => {
-    editTask(li, task);
-  });
-  li.appendChild(editBtn);
-  return li;
-}
+// // Function to create a single task element
+// function createTaskElement(task) {
+//   const li = document.createElement('li');
+//   const span = document.createElement('span');
+//   span.textContent = task.name;
+//   li.appendChild(span);
+//   const removeBtn = document.createElement('button');
+//   removeBtn.textContent = 'Remove';
+//   removeBtn.addEventListener('click', () => {
+//     removeTask(task._id);
+//   });
+//   li.appendChild(removeBtn);
+//   const editBtn = document.createElement('button');
+//   editBtn.textContent = 'Edit';
+//   editBtn.addEventListener('click', () => {
+//     editTask(li, task);
+//   });
+//   li.appendChild(editBtn);
+//   return li;
+// }
 
-// Function to add a new task
-function addTask() {
-  const taskName = taskInput.value;
-  if (!taskName) return;
-  const task = { name: taskName };
-  fetch(BASE_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(task)
-  })
-    .then(response => response.json())
-    .then(data => {
-      const li = createTaskElement(data);
-      tasksUl.appendChild(li);
-      taskInput.value = '';
-    })
-    .catch(error => console.log(error));
-}
+// // Function to add a new task
+// function addTask() {
+//   const taskName = taskInput.value;
+//   if (!taskName) return;
+//   const task = { name: taskName };
+//   fetch(BASE_URL, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(task)
+//   })
+//     .then(response => response.json())
+//     .then(data => {
+//       const li = createTaskElement(data);
+//       tasksUl.appendChild(li);
+//       taskInput.value = '';
+//     })
+//     .catch(error => console.log(error));
+// }
 
-// Function to remove a task
-function removeTask(taskId) {
-  fetch(`${BASE_URL}/${taskId}`, {
-    method: 'DELETE'
-  })
-    .then(response => response.json())
-    .then(data => {
-      loadTasks();
-    })
-    .catch(error => console.log(error));
-}
+// // Function to remove a task
+// function removeTask(taskId) {
+//   fetch(`${BASE_URL}/${taskId}`, {
+//     method: 'DELETE'
+//   })
+//     .then(response => response.json())
+//     .then(data => {
+//       loadTasks();
+//     })
+//     .catch(error => console.log(error));
+// }
 
-// Function to edit a task
-function editTask(li, task) {
-  const span = li.querySelector('span');
-  const editBtn = li.querySelector('button:nth-of-type(2)');
-  span.style.display = 'none';
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.value = task.name;
-  li.insertBefore(input, editBtn);
-  editBtn.textContent = 'Submit';
-  editBtn.removeEventListener('click', () => {
-    editTask(li, task);
-  });
-  editBtn.addEventListener('click', () => {
-    const newName = input.value;
-    if (!newName) return;
-    const newTask = { name: newName };
-    fetch(`${BASE_URL}/${task._id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newTask)
-    })
-      .then(response => response.json())
-      .then(data => {
-        span.textContent = newName;
-        span.style.display = 'inline';
-        li.removeChild(input);
-        editBtn.textContent = 'Edit';
-        editBtn.addEventListener('click', () => {
-          editTask(li, data);
-        });
-      })
-      .catch(error => console.log(error));
-  });
-}
+// // Function to edit a task
+// function editTask(li, task) {
+//   const span = li.querySelector('span');
+//   const editBtn = li.querySelector('button:nth-of-type(2)');
+//   span.style.display = 'none';
+//   const input = document.createElement('input');
+//   input.type = 'text';
+//   input.value = task.name;
+//   li.insertBefore(input, editBtn);
+//   editBtn.textContent = 'Submit';
+//   editBtn.removeEventListener('click', () => {
+//     editTask(li, task);
+//   });
+//   editBtn.addEventListener('click', () => {
+//     const newName = input.value;
+//     if (!newName) return;
+//     const newTask = { name: newName };
+//     fetch(`${BASE_URL}/${task._id}`, {
+//       method: 'PATCH',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify(newTask)
+//     })
+//       .then(response => response.json())
+//       .then(data => {
+//         span.textContent = newName;
+//         span.style.display = 'inline';
+//         li.removeChild(input);
+//         editBtn.textContent = 'Edit';
+//         editBtn.addEventListener('click', () => {
+//           editTask(li, data);
+//         });
+//       })
+//       .catch(error => console.log(error));
+//   });
+// }
