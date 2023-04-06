@@ -41,25 +41,6 @@ function onAdd(event) {
 }
 
 
-// function makeRequest(url, method, data, id) {
-//     const options = {
-//         method,
-//         headers: {
-//             'Content-Type': 'application/json'
-//         }
-//     };
-
-//     if (data) {
-//         options.body = JSON.stringify(data);
-//     }
-//     if (id) {
-//         url + id;
-//     }
-
-//     return fetch(url, options)
-//         .then(response => response.json())
-//         .catch(error => console.error(error));
-// }
 
 function onLoad(event) {
     // if (event) {
