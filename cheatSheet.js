@@ -84,7 +84,7 @@ console.log(`Map toString ${numbers}`);
 
 
 //Filter
-console.log(`Filter -> ${arr.filter(x => x % 2 == 0)}`);
+console.log(`Filter -> ${arr.filter(x => x % 2 === 0)}`);
 
 // Arrow function
 // filter((element, index, array) => { /* … */ })
