@@ -82,7 +82,7 @@ function solve() {
 
   }
   function onDelete() {
-    
+
     let li = this.parentNode;
     previewList.removeChild(li);
     formBtn.disabled = false;
@@ -286,3 +286,133 @@ function solve() {
 //     }
 // }
 
+// function solve() {
+//   // get HTML elements
+//   const main = document.getElementById('main');
+//   const formBtn = document.getElementById('form-btn');
+//   const previewList = document.getElementById('preview-list');
+//   const form = document.querySelector('form');
+//   let memory;
+
+//   form.addEventListener('submit', (e) => {
+//     e.preventDefault();
+
+//   });
+
+//   formBtn.addEventListener('click', onPublish);
+
+//   function onPublish() {
+
+//     // create a new FormData object
+//     const formData = new FormData(form);
+
+//     // store the key-value pairs in an array
+//     memory = [...formData.entries()];
+
+//     // validate inputs
+//     let isCorrect = true;
+//     memory.forEach((key) => {
+
+//       if (key[1] === '') {
+//         isCorrect = false;
+//       }
+//     });
+//     if (!isCorrect) {
+//       return;
+//     }
+
+//     // clear the form
+//     form.reset();
+
+
+
+//     // create elements
+//     const li = createElement('li', previewList, null, ['story-info']);
+//     const article = createElement('article', li);
+//     const h4Name = createElement('h4', article, `Name: ${memory[0][1]} ${memory[1][1]}`);
+//     const pAge = createElement('p', article, `Age: ${memory[2][1]}`);
+//     const pTitle = createElement('p', article, `Title: ${memory[3][1]}`);
+//     const pGenre = createElement('p', article, `Genre: ${memory[4][1]}`);
+//     const pStory = createElement('p', article, memory[5][1]);
+//     const saveBtn = createElement('button', li, 'Save Story', ['save-btn']);
+//     const editBtn = createElement('button', li, 'Edit Story', ['edit-btn']);
+//     const deleteBtn = createElement('button', li, 'Delete Story', ['delete-btn']);
+
+//     saveBtn.addEventListener('click', onSave);
+//     editBtn.addEventListener('click', onEdit);
+//     deleteBtn.addEventListener('click', onDelete);
+
+//     // disable button
+//     formBtn.disabled = true;
+
+//     // // reset form inputs
+//     // form.reset();
+//   }
+
+
+//   function onSave() {
+
+//     main.innerHTML = '';
+//     const h1 = createElement('h1', main, "Your scary story is saved!");
+
+//   }
+//   function onEdit() {
+//     // restore the key-value pairs to the form
+
+//     for (const [key, value] of memory) {
+//       form.querySelector(`[name="${key}"]`).value = value;
+//     }
+
+//     let li = this.parentNode;
+//     previewList.removeChild(li);
+//     formBtn.disabled = false;
+
+
+
+//   }
+//   function onDelete() {
+//     let li = this.parentNode;
+//     previewList.removeChild(li);
+//     formBtn.disabled = false;
+
+//   }
+//   function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
+//     const htmlElement = document.createElement(type);
+
+//     if (content && useInnerHtml) {
+//       htmlElement.innerHTML = content;
+
+//     } else {
+
+//       if (content && type !== 'input') {
+//         htmlElement.textContent = content;
+
+//       }
+//       if (content && type === 'input') {
+//         htmlElement.value = content;
+//       }
+//     }
+
+//     if (classes && classes.length > 0) {
+//       htmlElement.classList.add(...classes);
+//     }
+
+//     if (id) {
+//       htmlElement.id = id;
+//     }
+
+//     if (attributes) {
+//       for (let key in attributes) {
+//         htmlElement.setAttribute(key, attributes[key]);
+//         // htmlElement[key] = attributes[key];
+//       }
+
+//     }
+//     if (parentNode) {
+//       parentNode.appendChild(htmlElement);
+//     }
+
+//     return htmlElement;
+//   }
+
+// }
