@@ -5,6 +5,7 @@ function solve() {
     const hidden = document.getElementById('task-id');
     const tasksSection = document.getElementById('tasks-section');
     const createTaskBtn = document.getElementById('create-task-btn');
+    let taskId = 0;
 
     createTaskBtn.addEventListener('click', createTask);
     const deleteTaskBtn = document.getElementById('delete-task-btn');
@@ -21,16 +22,20 @@ function solve() {
 
     function createTask() {
         // Validate input fields
-        if (taskTitleInput.value === '' || taskDescriptionInput.value === '' || taskLabelInput.value === '' || taskEstimationInput.value === '' || taskAssigneeInput.value === '') {
+        if (taskTitleInput.value === '' ||
+            taskDescriptionInput.value === '' ||
+            taskLabelInput.value === '' ||
+            taskEstimationInput.value === '' ||
+            taskAssigneeInput.value === '') {
 
             return;
         }
 
+        taskId += 1;
         // Create task article
         const taskArticle = document.createElement('article');
-        taskArticle.id = `task-${tasksSection.children.length + 1}`;
+        taskArticle.id = `task-${taskId}`;
         taskArticle.classList.add('task-card');
-
 
         // Create task card label div
         const taskCardLabelDiv = document.createElement('div');
@@ -93,7 +98,7 @@ function solve() {
         let assignee = taskAssigneeInput.value;
 
         updateTotalPoints(Number(taskEstimationInput.value));
-        
+
         memory[taskArticle.id] = {
             title,
             description,
@@ -166,5 +171,4 @@ function solve() {
         totalPointsEl.textContent = `Total Points: ${totalPoints}`;
     }
 }
-
 
