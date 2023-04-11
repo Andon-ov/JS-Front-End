@@ -56,7 +56,7 @@ function solve() {
         createElement('h3', article, title, ['task-card-title'])
         createElement('p', article, description, ['task-card-description'])
         createElement('div', article, `Estimated at ${points} pts`, ['task-card-points'])
-        createElement('div', article, `Assignee to: ${assignee}`, ['task-card-assignee'])
+        createElement('div', article, `Assigned to: ${assignee}`, ['task-card-assignee'])
         const divBtn = createElement('div', article, null, ['task-card-actions'])
         const deleteBtn = createElement('button', divBtn, "Delete")
         deleteBtn.addEventListener('click', onDelete)
@@ -66,12 +66,12 @@ function solve() {
 
     function incrementPoints(points) {
         totalPoints += points
-        totalPointsElement.textContent = `Total Points ${totalPoints}pts `
+        totalPointsElement.textContent = `Total Points ${totalPoints}pts`
     }
 
     function decrementPoints(points) {
         totalPoints -= points
-        totalPointsElement.textContent = `Total Points ${totalPoints}pts `
+        totalPointsElement.textContent = `Total Points ${totalPoints}pts`
     }
 
     function onDelete() {
