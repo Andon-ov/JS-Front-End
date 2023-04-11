@@ -1,174 +1,151 @@
 window.addEventListener('load', solve);
 
-
 function solve() {
-    const hidden = document.getElementById('task-id');
-    const tasksSection = document.getElementById('tasks-section');
-    const createTaskBtn = document.getElementById('create-task-btn');
-    let taskId = 0;
+    const hidden = document.getElementById('task-id')
+    let taskId = 0
 
-    createTaskBtn.addEventListener('click', createTask);
-    const deleteTaskBtn = document.getElementById('delete-task-btn');
-    deleteTaskBtn.addEventListener('click', onClear);
+    const inputs = {
+        title: document.getElementById('title'),
+        description: document.getElementById('description'),
+        label: document.getElementById('label'),
+        points: document.getElementById('points'),
+        assignee: document.getElementById('assignee'),
+    }
 
-    const taskTitleInput = document.getElementById('title');
-    const taskDescriptionInput = document.getElementById('description');
-    const taskLabelInput = document.getElementById('label');
-    const taskEstimationInput = document.getElementById('points');
-    const taskAssigneeInput = document.getElementById('assignee');
+    const deleteTaskBtn = document.getElementById('delete-task-btn')
+    const createTaskBtn = document.getElementById('create-task-btn')
+
+    const taskSection = document.getElementById('tasks-section')
+
+    const totalPointsElement = document.getElementById('total-sprint-points')
+    let totalPoints = 0
 
 
-    let memory = {};
+    createTaskBtn.addEventListener('click', beforeCreate)
+    deleteTaskBtn.addEventListener('click', onDeleteTask)
+    const memory = {}
 
-    function createTask() {
-        // Validate input fields
-        if (taskTitleInput.value === '' ||
-            taskDescriptionInput.value === '' ||
-            taskLabelInput.value === '' ||
-            taskEstimationInput.value === '' ||
-            taskAssigneeInput.value === '') {
 
-            return;
+    function beforeCreate() {
+        let {title, description, label, points, assignee} = inputs
+
+        let isCorrect = Object.values(inputs).every(x => x.value !== '')
+        if (!isCorrect) {
+            return
+        }
+        createElements(title.value, description.value, label.value, points.value, assignee.value)
+        Object.values(inputs).forEach(x => x.value = '')
+
+    }
+
+    function createElements(title, description, label, points, assignee) {
+
+        const options = {
+            'Feature': 'Feature &#8865;',
+            'Low Priority Bug': 'Low Priority Bug &#9737;',
+            'High Priority Bug': 'High Priority Bug &#9888;',
+        }
+        const classes = {
+            'Feature': "feature", 'Low Priority Bug': "low-priority", 'High Priority Bug': "high-priority",
         }
 
-        taskId += 1;
-        // Create task article
-        const taskArticle = document.createElement('article');
-        taskArticle.id = `task-${taskId}`;
-        taskArticle.classList.add('task-card');
+        taskId += 1
 
-        // Create task card label div
-        const taskCardLabelDiv = document.createElement('div');
-        taskCardLabelDiv.classList.add('task-card-label', 'feature');
+        const article = createElement('article', taskSection, null, ['task-card'], `task-${taskId}`)
+        createElement('div', article, options[label], ["task-card-label", classes[label]], null, null, true)
+        createElement('h3', article, title, ['task-card-title'])
+        createElement('p', article, description, ['task-card-description'])
+        createElement('div', article, `Estimated at ${points} pts`, ['task-card-points'])
+        createElement('div', article, `Assignee to: ${assignee}`, ['task-card-assignee'])
+        const divBtn = createElement('div', article, null, ['task-card-actions'])
+        const deleteBtn = createElement('button', divBtn, "Delete")
+        deleteBtn.addEventListener('click', onDelete)
+        incrementPoints(Number(points))
+        memory[`task-${taskId}`] = {title, description, label, points, assignee}
+    }
 
-        if (taskLabelInput.value === 'Feature') {
-            taskCardLabelDiv.innerHTML = 'Feature &#8865;';
-            taskCardLabelDiv.classList.add('feature');
+    function incrementPoints(points) {
+        totalPoints += points
+        totalPointsElement.textContent = `Total Points ${totalPoints}pts `
+    }
 
-        } else if (taskLabelInput.value === 'Low Priority Bug') {
-            taskCardLabelDiv.innerHTML = 'Low Priority Bug &#9737;';
-            taskCardLabelDiv.classList.add('low-priority');
+    function decrementPoints(points) {
+        totalPoints -= points
+        totalPointsElement.textContent = `Total Points ${totalPoints}pts `
+    }
 
-        } else if (taskLabelInput.value === 'High Priority Bug') {
-            taskCardLabelDiv.innerHTML = 'High Priority Bug &#9888;';
-            taskCardLabelDiv.classList.add('high-priority');
-        }
-        taskArticle.appendChild(taskCardLabelDiv);
+    function onDelete() {
+        let id = this.parentNode.parentNode.id
+        hidden.value = id
 
+        createTaskBtn.disabled = true
+        deleteTaskBtn.disabled = false
 
-        // Create task card title h3
-        const taskCardTitleH3 = document.createElement('h3');
-        taskCardTitleH3.classList.add('task-card-title');
-        taskCardTitleH3.textContent = taskTitleInput.value;
-        taskArticle.appendChild(taskCardTitleH3);
-
-        // Create task card description p
-        const taskCardDescriptionP = document.createElement('p');
-        taskCardDescriptionP.classList.add('task-card-description');
-        taskCardDescriptionP.textContent = taskDescriptionInput.value;
-        taskArticle.appendChild(taskCardDescriptionP);
-
-        // Create task card estimation div
-        const taskCardPointsDiv = document.createElement('div');
-        taskCardPointsDiv.classList.add('task-card-points');
-        taskCardPointsDiv.textContent = taskEstimationInput.value;
-        taskArticle.appendChild(taskCardPointsDiv);
-
-        // Create task card assignee div
-        const taskCardAssigneeDiv = document.createElement('div');
-        taskCardAssigneeDiv.classList.add('task-card-assignee');
-        taskCardAssigneeDiv.textContent = `Assignee to: ${taskAssigneeInput.value}`;
-        taskArticle.appendChild(taskCardAssigneeDiv);
-
-        // Create task card action div
-        const taskCardActionDiv = document.createElement('div');
-        taskCardActionDiv.classList.add('task-card-actions');
-        taskArticle.appendChild(taskCardActionDiv);
-
-        const dellBtn = document.createElement('button');
-        dellBtn.textContent = 'Delete';
-        dellBtn.addEventListener('click', onDelete);
-        taskCardActionDiv.appendChild(dellBtn);
-
-
-        let title = taskTitleInput.value;
-        let description = taskDescriptionInput.value;
-        let label = taskLabelInput.value;
-        let points = taskEstimationInput.value;
-        let assignee = taskAssigneeInput.value;
-
-        updateTotalPoints(Number(taskEstimationInput.value));
-
-        memory[taskArticle.id] = {
-            title,
-            description,
-            label,
-            points,
-            assignee
-        };
-
-        tasksSection.appendChild(taskArticle);
-
-
-        // Clear input fields
-        taskTitleInput.value = '';
-        taskDescriptionInput.value = '';
-        taskLabelInput.value = '';
-        taskEstimationInput.value = '';
-        taskAssigneeInput.value = '';
-
-        function onDelete() {
-            let id = this.parentElement.parentElement.id;
-
-            taskTitleInput.value = memory[id].title;
-            taskTitleInput.disabled = true;
-            taskDescriptionInput.value = memory[id].description;
-            taskDescriptionInput.disabled = true;
-            taskLabelInput.value = memory[id].label;
-            taskLabelInput.disabled = true;
-            taskEstimationInput.value = memory[id].points;
-            taskEstimationInput.disabled = true;
-            taskAssigneeInput.value = memory[id].assignee;
-            taskAssigneeInput.disabled = true;
-            hidden.value = id;
-
-
-            createTaskBtn.disabled = true;
-            deleteTaskBtn.disabled = false;
+        for (let input of Object.values(inputs)) {
+            input.value = memory[id][input.id]
+            input.disabled = true
 
         }
 
     }
-    function onClear() {
-        let id = hidden.value;
-        let article = document.getElementById(id);
-        article.remove();
-        subtractPoints(Number(taskEstimationInput.value));
-        taskTitleInput.value = '';
-        taskDescriptionInput.value = '';
-        taskLabelInput.value = 'feature';
-        taskEstimationInput.value = '';
-        taskAssigneeInput.value = '';
-        taskTitleInput.disabled = false;
-        taskDescriptionInput.disabled = false;
-        taskLabelInput.disabled = false;
-        taskEstimationInput.disabled = false;
-        taskAssigneeInput.disabled = false;
-        deleteTaskBtn.disabled = true;
-        createTaskBtn.disabled = false;
-    }
-    // Update total points
-    let totalPoints = 0;
-    const totalPointsEl = document.querySelector("#total-sprint-points");
 
-    function updateTotalPoints(points) {
-        totalPoints += points;
-        totalPointsEl.textContent = `Total Points: ${totalPoints}`;
+    function onDeleteTask() {
+        let points = inputs.points.value
+        let id = this.parentNode.parentNode.querySelector('#task-id').value
+        let task = taskSection.querySelector(`#${id}`)
+
+        task.remove()
+        Object.values(inputs).forEach(x => {
+            x.value = ''
+            x.disabled = false
+        })
+        delete memory[id]
+        decrementPoints(Number(points))
+
+        createTaskBtn.disabled = false
+        deleteTaskBtn.disabled = true
     }
 
-    function subtractPoints(points) {
-        totalPoints -= points;
-        totalPointsEl.textContent = `Total Points: ${totalPoints}`;
+    function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
+        const htmlElement = document.createElement(type);
+
+        if (content && useInnerHtml) {
+            htmlElement.innerHTML = content;
+
+        } else {
+
+            if (content && type !== 'input') {
+                htmlElement.textContent = content;
+
+            }
+            if (content && type === 'input') {
+                htmlElement.value = content;
+            }
+        }
+
+        if (classes && classes.length > 0) {
+            htmlElement.classList.add(...classes);
+        }
+
+        if (id) {
+            htmlElement.id = id;
+        }
+
+        if (attributes) {
+            for (let key in attributes) {
+                htmlElement.setAttribute(key, attributes[key]);
+            }
+
+        }
+        if (parentNode) {
+            parentNode.appendChild(htmlElement);
+        }
+
+        return htmlElement;
     }
+
 }
+
+
+
 
