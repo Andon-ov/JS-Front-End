@@ -1,93 +1,139 @@
 window.addEventListener("load", solve);
 
 function solve() {
-    const form = document.querySelector("form");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-    });
-    const inputs = {
+    // get all inputs in obj
+    const inputDOMSelectors = {
         firstName: document.getElementById("first-name"),
         lastName: document.getElementById("last-name"),
         peopleCount: document.getElementById("people-count"),
         fromData: document.getElementById("from-date"),
         daysCount: document.getElementById("days-count"),
     };
-    const previewUl = document.querySelector('.ticket-info-list');
-    const confirmUl = document.querySelector('.confirm-ticket');
+
+    // get other DOM elements
+    const nextBtn = document.getElementById("next-btn");
+    const infoContainer = document.querySelector('.ticket-info-list');
+    const confirmContainer = document.querySelector('.confirm-ticket');
     const main = document.querySelector('#main');
     const body = document.querySelector('#body');
-    const nextBtn = document.getElementById("next-btn");
-    nextBtn.addEventListener("click", onAdd);
+    const form = document.querySelector("form");
 
-    const memory = {};
+    // make object which take all info
+    let ticketInfo = {};
 
-    function onAdd() {
-        const isValid = Object.values(inputs).every((x) => x.value !== "");
-        if (!isValid) {
+    // add event listener
+    nextBtn.addEventListener("click", nextStepHandler);
+
+    function nextStepHandler(event) {
+        // event prevent Default
+        event.preventDefault();
+
+        // check all inputs
+        const allFieldAreValid = Object.values(inputDOMSelectors).every((x) => x.value !== "");
+        if (!allFieldAreValid) {
             return;
         }
 
-        for (const input in inputs) {
-            memory[input] = inputs[input].value;
-        }
-        const li = createElement('li', previewUl, '', ["ticket"]);
+        // get all inputs
+        const { firstName, lastName, peopleCount, fromData, daysCount } = inputDOMSelectors;
+
+        // push info in object
+        ticketInfo = {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            peopleCount: peopleCount.value,
+            fromData: fromData.value,
+            daysCount: daysCount.value,
+        };
+
+        // create element
+        const li = createElement('li', infoContainer, '', ["ticket"]);
         const article = createElement('article', li);
-        createElement('h3', article, `Name: ${inputs['firstName'].value} ${inputs['lastName'].value}`);
-        createElement('p', article, `From date: ${inputs['fromData'].value}`);
-        createElement('p', article, `For ${inputs['daysCount'].value} days`);
-        createElement('p', article, `For ${inputs['peopleCount'].value} peoples`);
+        createElement('h3', article, `Name: ${firstName.value} ${lastName.value}`);
+        createElement('p', article, `From date: ${fromData.value}`);
+        createElement('p', article, `For ${daysCount.value} days`);
+        createElement('p', article, `For ${peopleCount.value} people`);
 
         const editBtn = createElement('button', li, `Edit`, ["edit-btn"]);
         const continueBtn = createElement('button', li, `Continue`, ["continue-btn"]);
 
+        // add event listener
         editBtn.addEventListener('click', onEdit);
         continueBtn.addEventListener('click', onContinue);
 
+        // reset form
         form.reset();
-        this.disabled = true;
+
+        // disable button
+        nextBtn.setAttribute('disabled', true);
     }
+
     function onEdit() {
+        // get li
         const li = this.parentNode;
-        for (const key in memory) {
-            inputs[key].value = memory[key];
+
+        // push all object value in inputs
+        for (const key in ticketInfo) {
+            inputDOMSelectors[key].value = ticketInfo[key];
         }
+
+        // remove li
         li.remove();
-        nextBtn.disabled = false;
 
-
+        // remove disabled attribute
+        nextBtn.removeAttribute('disabled');
     }
+    
     function onContinue() {
+
+        // get li
         const oldLi = this.parentNode;
+
+        // remove li
         oldLi.remove();
 
-        const li = createElement('li', confirmUl, '', ["ticket-content"]);
+        // create element
+        const li = createElement('li', confirmContainer, '', ["ticket-content"]);
         const article = createElement('article', li);
-        createElement('h3', article, `Name: ${memory['firstName']} ${memory['lastName']}`);
-        createElement('p', article, `From date: ${memory['fromData']}`);
-        createElement('p', article, `For ${memory['daysCount']} days`);
-        createElement('p', article, `For ${memory['peopleCount']} peoples`);
+        createElement('h3', article, `Name: ${ticketInfo['firstName']} ${ticketInfo['lastName']}`);
+        createElement('p', article, `From date: ${ticketInfo['fromData']}`);
+        createElement('p', article, `For ${ticketInfo['daysCount']} days`);
+        createElement('p', article, `For ${ticketInfo['peopleCount']} people`);
 
         const confirmBtn = createElement('button', li, `Confirm`, ["confirm-btn"]);
         const cancelBtn = createElement('button', li, `Cancel`, ["cancel-btn"]);
 
+        // add event listener
         confirmBtn.addEventListener('click', onConfirm);
         cancelBtn.addEventListener('click', onCancel);
-
     }
 
     function onConfirm() {
+
+        // remove main
         main.remove();
+
+        // add elements
         createElement('h1', body, "Thank you, have a nice day!", null, "thank-you");
         const backBtn = createElement("button", body, "Back", null, "back-btn");
+
+        // add event listener
         backBtn.addEventListener('click', () => { window.location.reload(); });
     }
+
     function onCancel() {
+
+        // get li
         const li = this.parentNode;
+
+        // remove li
         li.remove();
-        nextBtn.disabled = false;
+
+        // remove disabled attribute
+        nextBtn.removeAttribute('disabled');
     }
-    function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml
-    ) {
+
+    function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
         const htmlElement = document.createElement(type);
 
         if (content && useInnerHtml) {
