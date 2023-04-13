@@ -12,39 +12,81 @@ function solve() {
         fromData: document.getElementById("from-date"),
         daysCount: document.getElementById("days-count"),
     };
-    const previewUl = document.querySelector('.ticket-info-list')
+    const previewUl = document.querySelector('.ticket-info-list');
+    const confirmUl = document.querySelector('.confirm-ticket');
+    const main = document.querySelector('#main');
+    const body = document.querySelector('#body');
     const nextBtn = document.getElementById("next-btn");
     nextBtn.addEventListener("click", onAdd);
 
     const memory = {};
-    let id = 0;
+
     function onAdd() {
         const isValid = Object.values(inputs).every((x) => x.value !== "");
         if (!isValid) {
             return;
         }
-        id += 1;
 
-        memory[id] = {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            peopleCount: peopleCount.value,
-            fromData: fromData.value,
-            daysCount: daysCount.value,
-        };
+        for (const input in inputs) {
+            memory[input] = inputs[input].value;
+        }
+        const li = createElement('li', previewUl, '', ["ticket"]);
+        const article = createElement('article', li);
+        createElement('h3', article, `Name: ${inputs['firstName'].value} ${inputs['lastName'].value}`);
+        createElement('p', article, `From date: ${inputs['fromData'].value}`);
+        createElement('p', article, `For ${inputs['daysCount'].value} days`);
+        createElement('p', article, `For ${inputs['peopleCount'].value} peoples`);
 
+        const editBtn = createElement('button', li, `Edit`, ["edit-btn"]);
+        const continueBtn = createElement('button', li, `Continue`, ["continue-btn"]);
+
+        editBtn.addEventListener('click', onEdit);
+        continueBtn.addEventListener('click', onContinue);
+
+        form.reset();
+        this.disabled = true;
+    }
+    function onEdit() {
+        const li = this.parentNode;
+        for (const key in memory) {
+            inputs[key].value = memory[key];
+        }
+        li.remove();
+        nextBtn.disabled = false;
 
 
     }
+    function onContinue() {
+        const oldLi = this.parentNode;
+        oldLi.remove();
 
-    function createElement(
-        type,
-        parentNode,
-        content,
-        classes,
-        id,
-        attributes,
-        useInnerHtml
+        const li = createElement('li', confirmUl, '', ["ticket-content"]);
+        const article = createElement('article', li);
+        createElement('h3', article, `Name: ${memory['firstName']} ${memory['lastName']}`);
+        createElement('p', article, `From date: ${memory['fromData']}`);
+        createElement('p', article, `For ${memory['daysCount']} days`);
+        createElement('p', article, `For ${memory['peopleCount']} peoples`);
+
+        const confirmBtn = createElement('button', li, `Confirm`, ["confirm-btn"]);
+        const cancelBtn = createElement('button', li, `Cancel`, ["cancel-btn"]);
+
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+
+    }
+
+    function onConfirm() {
+        main.remove();
+        createElement('h1', body, "Thank you, have a nice day!", null, "thank-you");
+        const backBtn = createElement("button", body, "Back", null, "back-btn");
+        backBtn.addEventListener('click', () => { window.location.reload(); });
+    }
+    function onCancel() {
+        const li = this.parentNode;
+        li.remove();
+        nextBtn.disabled = false;
+    }
+    function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml
     ) {
         const htmlElement = document.createElement(type);
 
