@@ -32,7 +32,7 @@ function solve() {
       fuelInput.value === "" ||
       originalCostInput.value === "" ||
       sellingPriceInput.value === "" ||
-      Number(originalCostInput.value) > Number(sellingPriceInput.value)) {
+      Number(originalCostInput.value) >= Number(sellingPriceInput.value)) {
       return;
     }
 
