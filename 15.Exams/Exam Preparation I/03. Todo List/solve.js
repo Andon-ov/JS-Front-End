@@ -1,111 +1,92 @@
 function attachEvents() {
-
-    // get buttons and form and attach events
-    const addBtn = document.getElementById('add-button');
-    addBtn.addEventListener('click', onAdd);
-
-    const loadBtn = document.getElementById('load-button');
-    loadBtn.addEventListener('click', onLoad);
-
     const form = document.querySelector('form');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-    });
 
+    const addBtn = document.getElementById('add-button');
+    const loadBtn = document.getElementById('load-button');
+
+    form.addEventListener('submit', (ev) => ev.preventDefault());
+    addBtn.addEventListener('click', onAdd);
+    loadBtn.addEventListener('click', onLoad);
 }
 
-// get other DOM elements
-const root = document.getElementById('root');
-const url = `http://localhost:3030/jsonstore/tasks/`;
-const ul = document.getElementById('todo-list');
 const title = document.getElementById('title');
+const todoList = document.getElementById('todo-list');
 
-// load function
-function onAdd(event) {
+const url = `http://localhost:3030/jsonstore/tasks/`;
+
+function onAdd() {
     let name = title.value;
-    event.preventDefault();
-
     fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name }),
-    })
-        .then(() => {
-            title.value = '';
-            onLoad();
-        })
-        .catch((error) => console.log(error));
+        body: JSON.stringify({ name })
+    }).then(() => {
+        onLoad();
+    }).catch(error => console.log(error));
 
 }
+function onLoad() {
 
-
-
-function onLoad(event) {
-    // if (event) {
-
-    //     event.preventDefault();
-    // }
-
-    ul.innerHTML = '';
-
+    todoList.innerHTML = '';
     fetch(url)
-        .then((res) => res.json())
-        .then((data) => Object.values(data).map(x => {
+        .then(res => res.json())
+        .then(data => {
+            Object.values(data).forEach(x => {
+                const li = createElement('li', todoList, '', null, x._id);
+                const span = createElement('span', li, x.name);
+                const removeBtn = createElement('button', li, 'Remove');
+                const editBtn = createElement('button', li, 'Edit');
 
-            const li = createElement('li', ul, null, null, x._id);
-            const span = createElement('span', li, x.name);
-            const removeBtn = createElement('button', li, 'Remove');
-            removeBtn.addEventListener('click', onRemove);
-            const editBtn = createElement('button', li, 'Edit');
-            editBtn.addEventListener('click', onEdit);
+                removeBtn.addEventListener('click', onRemove);
+                editBtn.addEventListener('click', onEdit);
 
-        }))
-        .catch((error) => console.log(error));
+            });
+
+        })
+        .catch(error => console.log(error));
 }
 
 function onRemove() {
     let id = this.parentNode.id;
     fetch(url + id, {
-        method: "delete",
-
+        method: "DELETE"
     })
         .then(() => {
             onLoad();
-        })
-        .catch((error) => console.log(error));
-
+        }).catch(error => console.log(error));
 }
-
 function onEdit() {
-    const li = this.parentNode;
-    const name = li.querySelector('span').textContent;
+    let li = this.parentNode;
+    let span = li.querySelector('span');
 
-    li.innerHTML = '';
-    const input = createElement('input', li, name);
-    const removeBtn = createElement('button', li, 'Remove');
-    const submitBtn = createElement('button', li, 'Submit');
+    const input = document.createElement('input');
+    const submitBtn = document.createElement('button');
 
-    removeBtn.addEventListener('click', onRemove);
+    submitBtn.textContent = 'Submit';
     submitBtn.addEventListener('click', onSubmit);
 
+    input.value = span.textContent;
+
+    li.replaceChild(input, span);
+    li.replaceChild(submitBtn, this);
+
 }
-
 function onSubmit() {
-    let id = this.parentNode.id;
-    let name = this.parentNode.querySelector('input').value;
-
+    let li = this.parentNode;
+    let id = li.id;
+    let name = li.querySelector('input').value;
 
     fetch(url + id, {
-        method: 'PATCH',
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ name })
-    })
-        .then(() => {
-
-            onLoad();
-        })
-        .catch((error) => console.log(error));
+    }).then(() => {
+        onLoad();
+    }).catch(error => console.log(error));
 }
 
 function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
@@ -148,6 +129,158 @@ function createElement(type, parentNode, content, classes, id, attributes, useIn
 }
 
 attachEvents();
+
+
+// function attachEvents() {
+
+//     // get buttons and form and attach events
+//     const addBtn = document.getElementById('add-button');
+//     addBtn.addEventListener('click', onAdd);
+
+//     const loadBtn = document.getElementById('load-button');
+//     loadBtn.addEventListener('click', onLoad);
+
+//     const form = document.querySelector('form');
+//     form.addEventListener('submit', (event) => {
+//         event.preventDefault();
+//     });
+
+// }
+
+// // get other DOM elements
+// const root = document.getElementById('root');
+// const url = `http://localhost:3030/jsonstore/tasks/`;
+// const ul = document.getElementById('todo-list');
+// const title = document.getElementById('title');
+
+// // load function
+// function onAdd(event) {
+//     let name = title.value;
+//     event.preventDefault();
+
+//     fetch(url, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ name }),
+//     })
+//         .then(() => {
+//             title.value = '';
+//             onLoad();
+//         })
+//         .catch((error) => console.log(error));
+
+// }
+
+
+
+// function onLoad(event) {
+//     // if (event) {
+
+//     //     event.preventDefault();
+//     // }
+
+//     ul.innerHTML = '';
+
+//     fetch(url)
+//         .then((res) => res.json())
+//         .then((data) => Object.values(data).map(x => {
+
+//             const li = createElement('li', ul, null, null, x._id);
+//             const span = createElement('span', li, x.name);
+//             const removeBtn = createElement('button', li, 'Remove');
+//             removeBtn.addEventListener('click', onRemove);
+//             const editBtn = createElement('button', li, 'Edit');
+//             editBtn.addEventListener('click', onEdit);
+
+//         }))
+//         .catch((error) => console.log(error));
+// }
+
+// function onRemove() {
+//     let id = this.parentNode.id;
+//     fetch(url + id, {
+//         method: "delete",
+
+//     })
+//         .then(() => {
+//             onLoad();
+//         })
+//         .catch((error) => console.log(error));
+
+// }
+
+// function onEdit() {
+//     const li = this.parentNode;
+//     const name = li.querySelector('span').textContent;
+
+//     li.innerHTML = '';
+//     const input = createElement('input', li, name);
+//     const removeBtn = createElement('button', li, 'Remove');
+//     const submitBtn = createElement('button', li, 'Submit');
+
+//     removeBtn.addEventListener('click', onRemove);
+//     submitBtn.addEventListener('click', onSubmit);
+
+// }
+
+// function onSubmit() {
+//     let id = this.parentNode.id;
+//     let name = this.parentNode.querySelector('input').value;
+
+
+//     fetch(url + id, {
+//         method: 'PATCH',
+//         body: JSON.stringify({ name })
+//     })
+//         .then(() => {
+
+//             onLoad();
+//         })
+//         .catch((error) => console.log(error));
+// }
+
+// function createElement(type, parentNode, content, classes, id, attributes, useInnerHtml) {
+//     const htmlElement = document.createElement(type);
+
+//     if (content && useInnerHtml) {
+//         htmlElement.innerHTML = content;
+
+//     } else {
+
+//         if (content && type !== 'input') {
+//             htmlElement.textContent = content;
+
+//         }
+//         if (content && type === 'input') {
+//             htmlElement.value = content;
+//         }
+//     }
+
+//     if (classes && classes.length > 0) {
+//         htmlElement.classList.add(...classes);
+//     }
+
+//     if (id) {
+//         htmlElement.id = id;
+//     }
+
+//     if (attributes) {
+//         for (let key in attributes) {
+//             htmlElement.setAttribute(key, attributes[key]);
+//             // htmlElement[key] = attributes[key];
+//         }
+
+//     }
+//     if (parentNode) {
+//         parentNode.appendChild(htmlElement);
+//     }
+
+//     return htmlElement;
+// }
+
+// attachEvents();
 
 
 /* const loadBtn = document.getElementById('load-button');
